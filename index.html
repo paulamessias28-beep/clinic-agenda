@@ -37,7 +37,8 @@
             gap: 15px;
         }
 
-        input {
+        input,
+        select {
             padding: 12px;
             border: 1px solid #ccc;
             border-radius: 6px;
@@ -140,64 +141,78 @@
     <h2>Pacientes cadastrados</h2>
 
     <div id="listaPacientes"></div>
-<hr>
 
-<h2>Agendamento</h2>
+    <hr>
 
-<form class="formulario" id="formulario-agendamento">
+    <h2>Agendamento</h2>
 
-    <select id="pacienteAgendamento" required>
-        <option value="">Selecione o paciente</option>
-    </select>
+    <form class="formulario" id="formulario-agendamento">
 
-    <input
-        type="date"
-        id="dataAgendamento"
-        required
-    >
+        <select id="pacienteAgendamento" required>
 
-    <input
-        type="time"
-        id="horaAgendamento"
-        required
-    >
+            <option value="">
+                Selecione o paciente
+            </option>
 
-    <input
-        type="text"
-        id="profissional"
-        placeholder="Nome do profissional"
-        required
-    >
+        </select>
 
-    <input
-        type="text"
-        id="tipoAtendimento"
-        placeholder="Tipo de atendimento"
-        required
-    >
+        <input
+            type="date"
+            id="dataAgendamento"
+            required
+        >
 
-    <button type="submit">
-        Agendar
-    </button>
+        <input
+            type="time"
+            id="horaAgendamento"
+            required
+        >
 
-</form>
+        <input
+            type="text"
+            id="profissional"
+            placeholder="Nome do profissional"
+            required
+        >
 
-<h2>Agendamentos</h2>
+        <input
+            type="text"
+            id="tipoAtendimento"
+            placeholder="Tipo de atendimento"
+            required
+        >
 
-<div id="listaAgendamentos"></div>
+        <button type="submit">
+            Agendar
+        </button>
+
+    </form>
+
+    <h2>Agendamentos</h2>
+
+    <div id="listaAgendamentos"></div>
+
 </main>
 
 <script>
 
-    let pacientes = JSON.parse(localStorage.getItem("pacientes")) || [];
+    /* =========================
+       PACIENTES
+    ========================= */
+
+    let pacientes =
+        JSON.parse(localStorage.getItem("pacientes")) || [];
 
     let pacienteEditando = -1;
 
-    const formulario = document.getElementById("formulario-paciente");
+    const formulario =
+        document.getElementById("formulario-paciente");
 
-    const lista = document.getElementById("listaPacientes");
+    const lista =
+        document.getElementById("listaPacientes");
 
-    const botao = document.getElementById("botao");
+    const botao =
+        document.getElementById("botao");
 
 
     function mostrarPacientes() {
@@ -216,20 +231,26 @@
 
                 "CPF: " + paciente.cpf + "<br>" +
 
-                "Data de nascimento: " + paciente.dataNascimento + "<br>" +
+                "Data de nascimento: " +
+                paciente.dataNascimento + "<br>" +
 
-                "Telefone: " + paciente.telefone + "<br>" +
+                "Telefone: " +
+                paciente.telefone + "<br>" +
 
-                "E-mail: " + paciente.email +
+                "E-mail: " +
+                paciente.email +
 
                 '<div class="botoes">' +
 
-                '<button class="editar" onclick="editarPaciente(' + indice + ')">Editar</button>' +
+                '<button class="editar" onclick="editarPaciente(' +
+                indice +
+                ')">Editar</button>' +
 
-                '<button class="excluir" onclick="excluirPaciente(' + indice + ')">Excluir</button>' +
+                '<button class="excluir" onclick="excluirPaciente(' +
+                indice +
+                ')">Excluir</button>' +
 
                 '</div>';
-
 
             lista.appendChild(div);
 
@@ -242,18 +263,22 @@
 
         event.preventDefault();
 
-
         const paciente = {
 
-            nome: document.getElementById("nome").value,
+            nome:
+                document.getElementById("nome").value,
 
-            cpf: document.getElementById("cpf").value,
+            cpf:
+                document.getElementById("cpf").value,
 
-            dataNascimento: document.getElementById("dataNascimento").value,
+            dataNascimento:
+                document.getElementById("dataNascimento").value,
 
-            telefone: document.getElementById("telefone").value,
+            telefone:
+                document.getElementById("telefone").value,
 
-            email: document.getElementById("email").value
+            email:
+                document.getElementById("email").value
 
         };
 
@@ -270,73 +295,243 @@
 
             pacienteEditando = -1;
 
-            botao.textContent = "Cadastrar paciente";
+            botao.textContent =
+                "Cadastrar paciente";
 
             alert("Paciente atualizado com sucesso!");
 
         }
 
 
-        localStorage.setItem("pacientes", JSON.stringify(pacientes));
+        localStorage.setItem(
+            "pacientes",
+            JSON.stringify(pacientes)
+        );
 
         formulario.reset();
 
         mostrarPacientes();
+
         carregarPacientesNoAgendamento();
 
     });
 
 
- 
-    formularioAgendamento.reset();
+    function editarPaciente(indice) {
 
-    alert("Agendamento realizado com sucesso!");
+        const paciente = pacientes[indice];
 
-});
+        document.getElementById("nome").value =
+            paciente.nome;
 
+        document.getElementById("cpf").value =
+            paciente.cpf;
 
-function mostrarAgendamentos() {
+        document.getElementById("dataNascimento").value =
+            paciente.dataNascimento;
 
-    listaAgendamentos.innerHTML = "";
+        document.getElementById("telefone").value =
+            paciente.telefone;
 
-    agendamentos.forEach(function(agendamento, indice) {
+        document.getElementById("email").value =
+            paciente.email;
 
-        const div = document.createElement("div");
+        pacienteEditando = indice;
 
-        div.className = "paciente";
+        botao.textContent =
+            "Salvar alterações";
 
-        div.innerHTML =
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
 
-            "<strong>" + agendamento.paciente + "</strong><br>" +
-
-            "Data: " + agendamento.data + "<br>" +
-
-            "Horário: " + agendamento.hora + "<br>" +
-
-            "Profissional: " + agendamento.profissional + "<br>" +
-
-            "Atendimento: " + agendamento.tipo;
-
-
-        listaAgendamentos.appendChild(div);
-
-    });
-
-}
+    }
 
 
-mostrarAgendamentos();
-    // SEU CÓDIGO QUE JÁ EXISTE AQUI
+    function excluirPaciente(indice) {
+
+        const confirmar =
+            confirm(
+                "Deseja realmente excluir este paciente?"
+            );
+
+        if (!confirmar) {
+            return;
+        }
+
+        pacientes.splice(indice, 1);
+
+        localStorage.setItem(
+            "pacientes",
+            JSON.stringify(pacientes)
+        );
+
+        mostrarPacientes();
+
+        carregarPacientesNoAgendamento();
+
+        alert("Paciente excluído com sucesso!");
+
+    }
 
 
-// COLE O NOVO CÓDIGO AQUI
+    /* =========================
+       AGENDAMENTO
+    ========================= */
+
+    let agendamentos =
+        JSON.parse(localStorage.getItem("agendamentos")) || [];
+
+    const formularioAgendamento =
+        document.getElementById("formulario-agendamento");
+
+    const listaAgendamentos =
+        document.getElementById("listaAgendamentos");
 
 
-</script>
+    function carregarPacientesNoAgendamento() {
 
-</body>
+        const select =
+            document.getElementById("pacienteAgendamento");
 
-</html>
+        select.innerHTML =
+            '<option value="">Selecione o paciente</option>';
+
+        pacientes.forEach(function(paciente, indice) {
+
+            const option =
+                document.createElement("option");
+
+            option.value = indice;
+
+            option.textContent =
+                paciente.nome;
+
+            select.appendChild(option);
+
+        });
+
+    }
+
+
+    formularioAgendamento.addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+            const indicePaciente =
+                document.getElementById(
+                    "pacienteAgendamento"
+                ).value;
+
+
+            if (indicePaciente === "") {
+
+                alert("Selecione um paciente.");
+
+                return;
+
+            }
+
+
+            const agendamento = {
+
+                paciente:
+                    pacientes[indicePaciente].nome,
+
+                data:
+                    document.getElementById(
+                        "dataAgendamento"
+                    ).value,
+
+                hora:
+                    document.getElementById(
+                        "horaAgendamento"
+                    ).value,
+
+                profissional:
+                    document.getElementById(
+                        "profissional"
+                    ).value,
+
+                tipo:
+                    document.getElementById(
+                        "tipoAtendimento"
+                    ).value
+
+            };
+
+
+            agendamentos.push(agendamento);
+
+            localStorage.setItem(
+                "agendamentos",
+                JSON.stringify(agendamentos)
+            );
+
+            mostrarAgendamentos();
+
+            formularioAgendamento.reset();
+
+            alert(
+                "Agendamento realizado com sucesso!"
+            );
+
+        }
+    );
+
+
+    function mostrarAgendamentos() {
+
+        listaAgendamentos.innerHTML = "";
+
+        agendamentos.forEach(function(agendamento) {
+
+            const div =
+                document.createElement("div");
+
+            div.className = "paciente";
+
+            div.innerHTML =
+
+                "<strong>" +
+                agendamento.paciente +
+                "</strong><br>" +
+
+                "Data: " +
+                agendamento.data +
+                "<br>" +
+
+                "Horário: " +
+                agendamento.hora +
+                "<br>" +
+
+                "Profissional: " +
+                agendamento.profissional +
+                "<br>" +
+
+                "Atendimento: " +
+                agendamento.tipo;
+
+            listaAgendamentos.appendChild(div);
+
+        });
+
+    }
+
+
+    /* =========================
+       INICIALIZAÇÃO
+    ========================= */
+
+    mostrarPacientes();
+
+    carregarPacientesNoAgendamento();
+
+    mostrarAgendamentos();
+
 </script>
 
 </body>
